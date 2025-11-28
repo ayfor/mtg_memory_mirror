@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Transcript {
+  id        String   @id @default(uuid())
+  content   String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cards     CardCount[]
+}
+
+model CardCount {
+  id           String     @id @default(uuid())
+  cardName     String
+  count        Int
+  transcriptId String
+  transcript   Transcript @relation(fields: [transcriptId], references: [id])
+  createdAt    DateTime   @default(now())
+
+  @@index([transcriptId])
+  @@index([cardName])
+}
